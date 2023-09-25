@@ -30,7 +30,7 @@ jobs:
         apiVersion: argoproj.io/v1alpha1
         kind: Application
         metadata:
-          name: ${{ inputs.bucket-name }}
+          generateName: crossplane-${{ inputs.bucket-name }}-
           namespace: argocd
           finalizers:
           - resources-finalizer.argocd.argoproj.io

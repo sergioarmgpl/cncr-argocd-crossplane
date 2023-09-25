@@ -34,8 +34,8 @@ jobs:
           namespace: argocd
           finalizers:
           - resources-finalizer.argocd.argoproj.io
-       annotations:
-          argocd.argoproj.io/hook: Sync
+          annotations:
+            argocd.argoproj.io/hook: Sync
         spec:
           destination:
             namespace: development

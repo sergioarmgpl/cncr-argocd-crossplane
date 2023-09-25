@@ -20,7 +20,7 @@ jobs:
     - name: Clone Repo
       uses: actions/checkout@v3
       with:
-        repository: sergioarmgpl/CNAmsterdam2023
+        repository: sergioarmgpl/cncr-argocd-crossplane
         ref: main
 
     - name: Create Bucket Definition
@@ -62,6 +62,6 @@ jobs:
         commit-message: Creating Bucket with ArgoCD                
         title: Create Bucket ${{ inputs.bucket-name }}
         body: "Creating Bucket ${{ inputs.bucket-name }}"
-        branch: argocd-apps/app-create-${{ env.TIMESTAMP }}
+        branch: argocd-buckets/bucket-create-${{ env.TIMESTAMP }}
         delete-branch: true
         reviewers: sergioarmgpl

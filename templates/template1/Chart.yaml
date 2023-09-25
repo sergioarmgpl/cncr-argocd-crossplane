@@ -1,0 +1,6 @@
+apiVersion: v2
+name: template1
+description: Template 1 Argo Bucket with Helm
+type: application
+version: 0.0.1
+appVersion: 0.0.1

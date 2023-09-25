@@ -1,0 +1,67 @@
+name: Create Bucket
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        type: choice
+        description: ArgoCD project
+        options:
+        - project1
+        - project2
+      bucket-name:
+        required: true
+        type: string
+        description: Bucket name
+jobs:
+  create-argo-bucket:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Clone Repo
+      uses: actions/checkout@v3
+      with:
+        repository: sergioarmgpl/CNAmsterdam2023
+        ref: main
+
+    - name: Create Bucket Definition
+      id: create-application-definition
+      run: |
+        cat <<EOF > apps/${{ inputs.project }}/${{ inputs.bucket-name }}.yaml
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        metadata:
+          name: ${{ inputs.bucket-name }}
+          namespace: argocd
+          finalizers:
+          - resources-finalizer.argocd.argoproj.io
+        spec:
+          destination:
+            namespace: development
+            server: https://kubernetes.default.svc
+          project: ${{ inputs.project }}
+          source:
+            path: templates/template1
+            repoURL: https://github.com/sergioarmgpl/cncr-argocd-crossplane
+            targetRevision: HEAD
+            helm:
+              values: |
+                bucketName: ${{ inputs.bucket-name }}
+          syncPolicy:
+            automated:
+              prune: true
+              selfHeal: true
+        EOF
+
+    - name: Getting timestamp for PR
+      run: |
+        echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        commit-message: Creating Bucket with ArgoCD                
+        title: Create Bucket ${{ inputs.bucket-name }}
+        body: "Creating Bucket ${{ inputs.bucket-name }}"
+        branch: argocd-apps/app-create-${{ env.TIMESTAMP }}
+        delete-branch: true
+        reviewers: sergioarmgpl

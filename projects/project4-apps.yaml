@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apps-project4
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: development
+    server: https://kubernetes.default.svc
+  project: project4
+  source:
+    path: apps/project4
+    repoURL: https://github.com/sergioarmgpl/cncr-argocd-crossplane
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true

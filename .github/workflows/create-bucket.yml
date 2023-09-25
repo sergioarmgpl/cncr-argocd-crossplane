@@ -23,8 +23,12 @@ jobs:
         repository: sergioarmgpl/cncr-argocd-crossplane
         ref: main
 
+    - name: Getting timestamp for PR
+      run: |
+        echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+
     - name: Create Bucket Definition
-      id: create-application-definition
+      id: create-application-bucket-definition
       run: |
         cat <<EOF > apps/${{ inputs.project }}/${{ inputs.bucket-name }}.yaml
         apiVersion: argoproj.io/v1alpha1
@@ -47,16 +51,12 @@ jobs:
             targetRevision: HEAD
             helm:
               values: |
-                bucketName: ${{ inputs.bucket-name }}
+                bucketName: ${{ inputs.bucket-name }}-${{ env.TIMESTAMP }}
           syncPolicy:
             automated:
               prune: true
               selfHeal: true
         EOF
-
-    - name: Getting timestamp for PR
-      run: |
-        echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5

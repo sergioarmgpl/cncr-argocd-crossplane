@@ -13,6 +13,15 @@ on:
         required: true
         type: string
         description: Bucket name
+      app-name:
+        required: true
+        type: string
+        description: Application name
+      message:
+        required: true
+        type: string
+        description: Message to show
+
 jobs:
   create-argo-bucket:
     runs-on: ubuntu-20.04
@@ -50,6 +59,10 @@ jobs:
             helm:
               values: |
                 bucketName: ${{ inputs.bucket-name }}-${{ env.TIMESTAMP }}
+                appname: ${{ inputs.app-name }}
+                dockerImage: czdev/myapp
+                namespace: development
+                message: "${{ inputs.message }}"
           syncPolicy:
             automated:
               prune: true

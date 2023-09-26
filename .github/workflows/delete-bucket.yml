@@ -1,0 +1,43 @@
+name: Delete App
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        type: choice
+        description: ArgoCD project
+        options:
+        - project3
+        - project4
+      bucket-name:
+        required: true
+        type: string
+        description: Bucket/Application name
+
+jobs:
+  delete-argo-app:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Clone Repo
+      uses: actions/checkout@v3
+      with:
+        repository: sergioarmgpl/cncr-argocd-crossplane
+        ref: main
+
+    - name: Delete Application
+      run: |
+        rm apps/${{ inputs.project }}/${{ inputs.bucket-name }}.yaml
+
+    - name: Getting timestamp for PR
+      run: |
+        echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+
+    - name: Delete Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        commit-message: Delete ArgoCD Application
+        title: Delete ArgoCD Application ${{ inputs.bucket-name }}
+        body: "Deleting ArgoCD Application ${{ inputs.bucket-name }} in development"
+        branch: argocd-apps/app-delete-${{ env.TIMESTAMP }}
+        delete-branch: true
+        reviewers: sergioarmgpl

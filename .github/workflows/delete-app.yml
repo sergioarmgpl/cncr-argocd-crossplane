@@ -9,10 +9,10 @@ on:
         options:
         - project3
         - project4
-      bucket-name:
+      app-name:
         required: true
         type: string
-        description: Bucket/Application name
+        description: Application name
 
 jobs:
   delete-argo-app:
@@ -26,7 +26,7 @@ jobs:
 
     - name: Delete Application
       run: |
-        rm apps/${{ inputs.project }}/${{ inputs.bucket-name }}.yaml
+        rm apps/${{ inputs.project }}/${{ inputs.app-name }}.yaml
 
     - name: Getting timestamp for PR
       run: |
@@ -36,8 +36,8 @@ jobs:
       uses: peter-evans/create-pull-request@v5
       with:
         commit-message: Delete ArgoCD Application
-        title: Delete ArgoCD Application ${{ inputs.bucket-name }}
-        body: "Deleting ArgoCD Application ${{ inputs.bucket-name }} in development"
+        title: Delete ArgoCD Application ${{ inputs.app-name }}
+        body: "Deleting ArgoCD Application ${{ inputs.app-name }} in development"
         branch: argocd-apps/app-delete-${{ env.TIMESTAMP }}
         delete-branch: true
         reviewers: sergioarmgpl

@@ -1,4 +1,4 @@
-name: Create Bucket
+name: Create Application
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ on:
         description: Message to show
 
 jobs:
-  create-argo-bucket:
+  create-argo-app:
     runs-on: ubuntu-20.04
     steps:
     - name: Clone Repo
@@ -39,11 +39,11 @@ jobs:
     - name: Create Bucket Definition
       id: create-application-bucket-definition
       run: |
-        cat <<EOF > apps/${{ inputs.project }}/${{ inputs.bucket-name }}.yaml
+        cat <<EOF > apps/${{ inputs.project }}/${{ inputs.app-name }}.yaml
         apiVersion: argoproj.io/v1alpha1
         kind: Application
         metadata:
-          name: bucket-${{ inputs.bucket-name }}
+          name: ${{ inputs.app-name }}
           namespace: argocd
           finalizers:
           - resources-finalizer.argocd.argoproj.io
@@ -72,9 +72,9 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
-        commit-message: Creating Bucket with ArgoCD                
-        title: Create Bucket ${{ inputs.bucket-name }}
-        body: "Creating Bucket ${{ inputs.bucket-name }}"
-        branch: argocd-buckets/bucket-create-${{ env.TIMESTAMP }}
+        commit-message: Creating Application with ArgoCD                
+        title: Create Application ${{ inputs.app-name }}
+        body: "Creating Application ${{ inputs.app-name }}"
+        branch: argocd-apps/app-create-${{ env.TIMESTAMP }}
         delete-branch: true
         reviewers: sergioarmgpl

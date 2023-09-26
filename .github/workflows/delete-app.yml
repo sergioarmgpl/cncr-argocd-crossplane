@@ -1,4 +1,4 @@
-name: Delete App
+name: Delete Application
 
 on:
   workflow_dispatch:
